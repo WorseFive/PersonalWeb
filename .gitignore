@@ -3,11 +3,13 @@ node_modules/
 .next/
 out/
 coverage/
+*.tsbuildinfo
 
 # Secrets and local provider state
 .env
 .env.local
 .env.*.local
+.data/
 .vercel/
 
 # Retained downloaded research snapshots; provenance is tracked in docs/SOURCE-LEDGER.md.

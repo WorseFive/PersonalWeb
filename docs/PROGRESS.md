@@ -15,9 +15,34 @@ Verification: source snapshot revisions are recorded in `docs/SOURCE-LEDGER.md`;
 
 Next concrete step: choose the actual hosting/data provider and the scope of public uploads, then scaffold the portal in this repository.
 
+## 2026-08-29 - Local portal first release
+
+Status: complete for the authorized local implementation and verification; public deployment remains unstarted.
+
+- Implemented a strict TypeScript Next.js App Router portal with Wii-style home navigation and iBooks-style writing/resource shelves.
+- Added authored writing routes, an about route, resource downloads, moderated plain-text comments, an administrator-only console, signed local sessions, and validated local uploads.
+- Kept mutable data and uploaded files under the ignored non-public `.data` adapter directory, configurable through `PORTAL_DATA_DIR`.
+- Added unit tests for validation/session primitives and isolated functional tests for public reading, moderation, login/logout, allowed and denied uploads, and mediated downloads.
+- Fixed the local adapter so unreadable or corrupt database files are not silently replaced by a new empty store.
+
+Verification: `npm run verify` passed on 2026-08-29. This ran TypeScript checking, 3/3 domain tests, an optimized production build, and the same functional suite against both Next development and production servers. Browser QA at desktop and 390px narrow width found no horizontal overflow or console errors on the homepage, library, reader, and administrator login surfaces.
+
+Next concrete step: if and only if public deployment is authorized, select an owned provider, replace the local adapter with managed Auth/Postgres/object storage plus access policies, configure secrets, and run the release checklist.
+
+## 2026-08-29 — First runnable portal implementation started
+
+Status: superseded by the completed local portal first release above.
+
+- Chosen the local development adapter described in `D-003` so comments, moderation, administrator uploads, and downloads can be implemented and exercised without external accounts.
+- Planned a Next.js App Router implementation with Wii-style public navigation, iBooks-style content collections, MDX-like authored content held in source, and a local mutable-data boundary.
+
+Verification: retained as the start-of-work record; implementation, static checks, functional tests, and browser QA are recorded in the completed release entry above.
+
+Next concrete step: use the provider-selection release path recorded in the completed release entry when public deployment is authorized.
+
 ## 2026-08-29 — Web Creator guidance expanded
 
-Status: complete; portal implementation remains intentionally unstarted.
+Status: complete; the former implementation status is superseded by the completed local portal first release above.
 
 - Reworked `web-creator` from a general checklist into six executable gates with exit conditions.
 - Added greenfield bootstrap, trust-boundary, comment, upload, release, and visual-brief guides.
@@ -25,4 +50,4 @@ Status: complete; portal implementation remains intentionally unstarted.
 
 Verification: strict UTF-8 checks passed; `quick_validate.py` reports `Skill is valid!`; unfinished-marker scan, referenced-guide existence checks, and Git whitespace checks passed.
 
-Next concrete step: choose the actual hosting/data provider and the scope of public uploads, then scaffold the portal in this repository.
+Next concrete step: choose an owned hosting/data provider only when public deployment is authorized.
