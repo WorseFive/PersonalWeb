@@ -1,5 +1,20 @@
 # Progress log
 
+## 2026-08-29 - Managed provider provisioning and release-block diagnosis
+
+Status: Supabase production data/storage path complete and tested; Vercel public deployment blocked by provider state.
+
+- Created the `WorseFive` Supabase organization and the `personalweb` project (`gmtkndehijhnmmpnugkw`) in `ap-southeast-1`.
+- Applied `20260829_000001_portal_production.sql`, creating Postgres tables, RLS denials, moderation audit history, the atomic rate-limit RPC, and private `portal-resources` bucket.
+- Added Vercel project `piggy12138-3362/personalweb`, configured Next.js detection, and set production-only server secrets/configuration. Deployment protection was explicitly disabled for the public release.
+- Ran `npm run test:supabase` against the real project: anonymous REST access was denied or empty, the bucket was private with the correct 5 MB limit, the atomic rate limit rejected the fourth request, and a temporary object completed upload/download/removal.
+- Fixed the Supabase contract fixture to generate a real 64-character request HMAC and made dynamic article pages server-render at request time so published comments are not frozen into a build artifact. `npm run verify` passed after the correction.
+- Investigated the Vercel failure with direct, forced, and prebuilt deployment paths. The remote builds remain `BLOCKED`/`UNKNOWN` with 0 ms build records and no logs; the route URL serves Vercel's build-in-progress page, not the application. Local prebuild is additionally prevented by Windows symlink permission (`EPERM`), but this is not the cause of the remote platform block.
+
+Verification: local complete gate and real Supabase contract gate passed. Public live functional and browser acceptance tests are intentionally not claimed because the Vercel endpoint has not served the application.
+
+Next concrete step: in Vercel Dashboard, resolve the account/project deployment block shown for `personalweb` (including any identity, eligibility, or provider restriction), then rerun a direct production deployment followed by `npm run test:live` and browser QA.
+
 ## 2026-08-29 - Managed production migration prepared
 
 Status: implementation complete and locally verified; source is pushed; external provider creation and deployment await owner OAuth consent.

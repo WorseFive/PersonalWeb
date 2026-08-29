@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/site-header";
 import { getPost, posts } from "@/lib/content";
 import { listPublishedComments } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export function generateStaticParams() {
   return posts.map((post) => ({ slug: post.slug }));
 }

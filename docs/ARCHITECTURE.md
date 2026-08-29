@@ -32,7 +32,7 @@ The first runnable release uses a local file-backed development adapter when pro
 | `/uploads` | Authenticated upload area, if public/user uploads are enabled. |
 | `/admin` | Author/moderator management surface. |
 
-The public shell also includes a visible navigation header. `app/(public)` owns the reader-facing route group; interactive comment and administration controls are isolated in client components while storage, session validation, and all mutations remain server-side.
+The public shell also includes a visible navigation header. `app/(public)` owns the reader-facing route group; interactive comment and administration controls are isolated in client components while storage, session validation, and all mutations remain server-side. Article detail routes are deliberately dynamic so newly moderated comments are read from Postgres at request time rather than frozen into a static build artifact.
 
 ## Security baseline
 

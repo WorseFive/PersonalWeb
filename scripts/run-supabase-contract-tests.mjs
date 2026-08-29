@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 
 const required = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_STORAGE_BUCKET", "SUPABASE_ANON_KEY"];
@@ -11,7 +11,7 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const anonKey = process.env.SUPABASE_ANON_KEY;
 const admin = createClient(url, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } });
 const objectKey = `contract-tests/${randomUUID()}.txt`;
-const requestHash = randomUUID().replaceAll("-", "").slice(0, 64);
+const requestHash = randomBytes(32).toString("hex");
 
 try {
   const directTableRead = await fetch(`${url}/rest/v1/resources?select=id&limit=1`, {

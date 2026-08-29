@@ -14,3 +14,6 @@ coverage/
 
 # Retained downloaded research snapshots; provenance is tracked in docs/SOURCE-LEDGER.md.
 research/upstream-skills/
+
+# Provider CLI link metadata is local state, not source configuration.
+supabase/.temp/

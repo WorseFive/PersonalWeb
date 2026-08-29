@@ -28,10 +28,16 @@ Status: accepted for the local first release. Public visitor uploads, self-servi
 
 For the authorized production release, use Vercel to host the Next.js application and a private Supabase Storage bucket plus Supabase Postgres for mutable data. Keep the existing single-administrator, server-side password and signed-cookie boundary for this personal portal; the Supabase service-role key is server-only and never reaches the browser. Public comments remain plain text and pending until moderation. Library downloads are mediated by the application, so storage objects remain private.
 
-Status: provisional until the owner completes provider OAuth consent and the projects are created. This deployment authorization does not authorize accepting third-party terms or OAuth scopes on the owner's behalf.
+Status: implemented for Supabase project `gmtkndehijhnmmpnugkw` (Singapore) and Vercel project `prj_XagMfjjC7JuSjpQqRa6BAE1TUYkR`. The intended public Vercel deployment remains blocked by the provider control plane; see D-007 and `docs/PROGRESS.md`.
 
 ## D-006 - 2026-08-29 - Use a private GitHub deployment source
 
 Create `WorseFive/PersonalWeb` as the private source repository for the Vercel project. The site remains publicly reachable after deployment, while source history and server-side configuration stay private.
 
 Status: implemented. The initial production-adapter commit is pushed to `main`.
+
+## D-007 - 2026-08-29 - Preserve the Vercel release boundary while blocked
+
+The project is configured as Next.js, production secrets are set, deployment protection is disabled, and two direct production deployments were requested. Vercel still reports the deployments as `BLOCKED`/`UNKNOWN`, exposes only its building page, and records zero build duration and no logs. Do not substitute the building-page URL for a live site or weaken the Supabase boundary to work around this provider-side condition.
+
+Status: blocked by the Vercel account or provider control plane. Resume the same release path after the Vercel Dashboard shows the account/project as eligible to build and deploy.
