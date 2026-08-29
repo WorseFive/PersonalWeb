@@ -115,15 +115,21 @@ try {
   const upload = await fetch(`${baseUrl}/api/admin/uploads`, { method: "POST", headers: { Cookie: cookie }, body: uploadForm });
   assert.equal(upload.status, 201);
   const resource = (await upload.json()).resource;
+  const adminResources = await fetch(`${baseUrl}/api/admin/resources`, { headers: { Cookie: cookie } });
+  assert.equal(adminResources.status, 200);
+  assert.equal((await adminResources.json()).resources.some((entry) => entry.id === resource.id), true);
   const download = await fetch(`${baseUrl}/api/library/${resource.id}/download`);
   assert.equal(download.status, 200);
   assert.equal(download.headers.get("x-content-type-options"), "nosniff");
   assert.equal(await download.text(), "tested local resource\n");
+  const removal = await fetch(`${baseUrl}/api/admin/resources/${resource.id}`, { method: "DELETE", headers: { Cookie: cookie } });
+  assert.equal(removal.status, 200);
+  assert.equal((await fetch(`${baseUrl}/api/library/${resource.id}/download`)).status, 404);
 
   const logout = await fetch(`${baseUrl}/api/auth/logout`, { method: "POST", headers: { Cookie: cookie } });
   assert.equal(logout.status, 200);
   assert.equal((await fetch(`${baseUrl}/api/admin/comments`, { headers: { Cookie: cookieOf(logout) } })).status, 401);
-  console.log(`PASS (${productionMode ? "production" : "development"}): public routes, cross-origin and rate-limit comment defenses, moderation, administrator boundary, rejected uploads, accepted upload, download, and logout.`);
+  console.log(`PASS (${productionMode ? "production" : "development"}): public routes, cross-origin and rate-limit comment defenses, moderation, administrator boundary, rejected uploads, accepted upload, server-mediated download, object deletion, and logout.`);
 } finally {
   if (!child.killed) child.kill("SIGTERM");
   await Promise.race([once(child, "exit"), new Promise((resolveWait) => setTimeout(resolveWait, 5_000))]);

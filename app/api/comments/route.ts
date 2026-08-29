@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   if (!sameOrigin(request)) return NextResponse.json({ error: "Cross-origin comment requests are not accepted." }, { status: 403 });
-  if (!takeCommentAllowance(request)) return NextResponse.json({ error: "Please wait before submitting another comment." }, { status: 429 });
+  if (!(await takeCommentAllowance(request))) return NextResponse.json({ error: "Please wait before submitting another comment." }, { status: 429 });
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON request." }, { status: 400 }); }
   const parsed = validateCommentInput(body);

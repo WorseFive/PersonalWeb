@@ -1,5 +1,18 @@
 # Progress log
 
+## 2026-08-29 - Managed production migration prepared
+
+Status: implementation complete and locally verified; external provider creation and deployment await owner OAuth consent.
+
+- Added the Vercel + Supabase production adapter, including server-only service-role access, a private Storage bucket, resource metadata, moderation audit events, and fail-closed partial configuration.
+- Added an atomic Postgres-backed comment limit keyed by an HMAC rather than a raw visitor address; retained the isolated in-memory equivalent for local tests.
+- Added controlled resource listing/removal to the administrator surface, server-mediated download preservation, canonical/Open Graph/robots/sitemap metadata, and a 404 page.
+- Added a Supabase contract test and a live HTTPS acceptance test. Both tests clean their temporary uploaded object; the live test rejects its temporary comment after checking the publication lifecycle.
+
+Verification so far: TypeScript and unit tests passed after the adapter was introduced. The complete local build and functional gate, Supabase contract gate, deployed live gate, browser QA, and release URL remain pending the provider projects and deployment.
+
+Next concrete step: the owner completes the displayed Supabase GitHub OAuth authorization; then create the managed project, apply the checked-in migration, configure Vercel secrets, deploy, and run every pending gate.
+
 ## 2026-08-29 — Planning and workflow foundation
 
 Status: complete for research and project recording; application implementation has not started.

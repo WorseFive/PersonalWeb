@@ -15,11 +15,11 @@ Build a personal public portal containing self-introduction, blog posts, a resou
 | Object storage | Supabase Storage or Cloudflare R2 | Images, attachments, user-uploaded files, signed access. |
 | Editorial content | MDX in Git at first | Blog content and revision-friendly authoring. |
 
-This is a baseline, not a deployed system. The actual host and data provider must be recorded in `docs/DECISIONS.md` before implementation.
+The authorized production target is Vercel for hosting and Supabase Postgres plus a private Supabase Storage bucket for mutable records and files. The provider project identifiers, region, production URL, and creation state are recorded in `docs/DECISIONS.md` and `docs/PROGRESS.md` once the owner finishes provider consent.
 
 ## Local development adapter
 
-Until the user supplies an owned Supabase or equivalent provider, the first runnable release uses a local file-backed development adapter. JSON records live under `PORTAL_DATA_DIR` (default `.data`) and uploaded files live under its non-public `uploads` directory. A single administrator password and signed session cookie provide a local-only author boundary. This adapter exists to exercise real comment, moderation, upload, and download flows; it is not an approved public-production identity or storage provider.
+The first runnable release uses a local file-backed development adapter when production credentials are absent. JSON records live under `PORTAL_DATA_DIR` (default `.data`) and uploaded files live under its non-public `uploads` directory. A single administrator password and signed session cookie provide the administrator boundary. When `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_STORAGE_BUCKET` are present, the same server API uses Supabase Postgres and private Storage instead. This keeps local functional tests isolated while making production data durable.
 
 ## Implemented release-1 routes
 
@@ -42,9 +42,15 @@ For the local adapter, public comments are stored as `pending`; only the adminis
 
 Allowed local uploads are `.txt` (`text/plain`), `.pdf` (`application/pdf`), and `.png` (`image/png`) up to 5 MB. Extension, declared media type, byte size, and a basic file signature are checked server-side. Administrator sessions are HMAC-signed, `HttpOnly`, `SameSite=Lax`, and expire after eight hours. The local JSON adapter is intentionally development-only: it does not provide multi-process write coordination, durable audit history, or production-grade identity.
 
+## Production boundary
+
+Production runs on Vercel. The application selects the Supabase adapter only when all three server-only values `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and `SUPABASE_STORAGE_BUCKET` exist; a partial configuration fails closed. Postgres holds comments, moderation events, resources, and HMAC-keyed rate-limit windows. The `portal-resources` Storage bucket is private, has a 5 MB MIME allowlist, and has no browser policy. The server checks the public resource record before downloading bytes. The administrator can remove a resource through the application, which removes the private object and its metadata record.
+
+The single administrator boundary remains an HMAC-signed `HttpOnly`, `SameSite=Lax` cookie generated after comparing `ADMIN_PASSWORD` server-side. The rate-limit HMAC uses `RATE_LIMIT_SECRET` (or a strong session secret only for local compatibility), so the database never receives a raw address. `SITE_URL` supplies canonical, robots, sitemap, and Open Graph metadata.
+
 ## Verification boundary
 
-`tests/domain.test.ts` covers validation and signed-session primitives. `scripts/run-functional-tests.mjs` starts an isolated server with a temporary data directory and verifies both development and production modes: public reading, comment creation and moderation, denied and allowed uploads, mediated download, and logout. Browser QA checks desktop and 390px narrow layouts, overflow, route rendering, and console errors.
+`tests/domain.test.ts` covers validation and signed-session primitives. `scripts/run-functional-tests.mjs` starts an isolated server with a temporary data directory and verifies both development and production modes: public reading, comment creation and moderation, denied and allowed uploads, mediated download, object removal, and logout. `scripts/run-supabase-contract-tests.mjs` verifies actual RLS/bucket/rate-limit/object-storage policy. `scripts/run-live-production-tests.mjs` verifies the deployed HTTPS origin end-to-end and cleans its temporary test data. Browser QA checks desktop and 390px narrow layouts, overflow, route rendering, and console errors.
 
 ## Visual system
 

@@ -9,21 +9,29 @@ export function AdminConsole() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [comments, setComments] = useState<PortalComment[]>([]);
+  const [resources, setResources] = useState<StoredResource[]>([]);
   const [message, setMessage] = useState("");
   const [uploadMessage, setUploadMessage] = useState("");
 
-  async function loadComments() {
-    const response = await fetch("/api/admin/comments", { credentials: "same-origin" });
-    if (!response.ok) {
+  async function loadAdminData() {
+    const [commentsResponse, resourcesResponse] = await Promise.all([
+      fetch("/api/admin/comments", { credentials: "same-origin" }),
+      fetch("/api/admin/resources", { credentials: "same-origin" })
+    ]);
+    if (!commentsResponse.ok || !resourcesResponse.ok) {
       setAuthenticated(false);
       return;
     }
-    const result = await response.json() as { comments: PortalComment[] };
+    const [commentResult, resourceResult] = await Promise.all([
+      commentsResponse.json() as Promise<{ comments: PortalComment[] }>,
+      resourcesResponse.json() as Promise<{ resources: StoredResource[] }>
+    ]);
     setAuthenticated(true);
-    setComments(result.comments);
+    setComments(commentResult.comments);
+    setResources(resourceResult.resources);
   }
 
-  useEffect(() => { void loadComments(); }, []);
+  useEffect(() => { void loadAdminData(); }, []);
 
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,8 +48,8 @@ export function AdminConsole() {
       return;
     }
     setPassword("");
-    setMessage("Local administrator session active.");
-    await loadComments();
+    setMessage("Administrator session active.");
+    await loadAdminData();
   }
 
   async function moderate(id: string, status: "published" | "rejected") {
@@ -71,27 +79,40 @@ export function AdminConsole() {
     }
     form.reset();
     setUploadMessage(`Saved ${result.resource?.title ?? "resource"} to the public library.`);
+    await loadAdminData();
+  }
+
+  async function removeResource(id: string) {
+    const response = await fetch(`/api/admin/resources/${id}`, { method: "DELETE", credentials: "same-origin" });
+    const result = await response.json() as ApiError;
+    if (!response.ok) {
+      setUploadMessage(result.error ?? "Removal failed.");
+      return;
+    }
+    setResources((current) => current.filter((resource) => resource.id !== id));
+    setUploadMessage("Resource removed from the library and object storage.");
   }
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
     setAuthenticated(false);
     setComments([]);
+    setResources([]);
     setMessage("Signed out.");
   }
 
   if (!authenticated) {
     return (
       <section className="admin-panel" aria-labelledby="admin-title">
-        <p className="eyebrow">Local-only control room</p>
+        <p className="eyebrow">Control room</p>
         <h1 id="admin-title">Administrator sign-in</h1>
-        <p className="muted">Set `ADMIN_PASSWORD` and a 32-character `SESSION_SECRET` in `.env.local` before using this local adapter.</p>
+        <p className="muted">Use the server-side administrator password configured for this deployment.</p>
         <form className="login-form" onSubmit={login}>
           <label>
-            Local administrator password
+            Administrator password
             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
           </label>
-          <button className="primary-button" type="submit">Sign in locally</button>
+          <button className="primary-button" type="submit">Sign in</button>
         </form>
         <p aria-live="polite" className="form-message">{message}</p>
       </section>
@@ -102,7 +123,7 @@ export function AdminConsole() {
     <section className="admin-panel" aria-labelledby="admin-title">
       <div className="admin-title-row">
         <div>
-          <p className="eyebrow">Local-only control room</p>
+          <p className="eyebrow">Control room</p>
           <h1 id="admin-title">Moderate and publish</h1>
         </div>
         <button className="quiet-button" onClick={logout} type="button">Sign out</button>
@@ -129,6 +150,17 @@ export function AdminConsole() {
             <button className="primary-button" type="submit">Publish to library</button>
           </form>
           <p aria-live="polite" className="form-message">{uploadMessage}</p>
+        </section>
+        <section>
+          <h2>Published resources</h2>
+          {resources.length === 0 ? <p className="muted">No resources have been published.</p> : (
+            <ul className="moderation-list">
+              {resources.map((resource) => <li key={resource.id}>
+                <strong>{resource.title}</strong><span>{resource.sourceName} · {(resource.size / 1024).toFixed(1)} KB</span><p>{resource.description}</p>
+                <button className="danger-button" onClick={() => void removeResource(resource.id)} type="button">Remove file</button>
+              </li>)}
+            </ul>
+          )}
         </section>
       </div>
     </section>

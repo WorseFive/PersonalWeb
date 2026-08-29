@@ -23,3 +23,9 @@ Status: accepted for local development only. Supabase or an equivalent productio
 Keep article and library reading public. Accept visitor comments as plain text only, rate-limit them locally, and keep every new comment pending until an administrator publishes or rejects it. Restrict file creation to the administrator and accept only small TXT, PDF, and PNG files through a server-side allowlist and signature check.
 
 Status: accepted for the local first release. Public visitor uploads, self-service accounts, rich-text comments, and a production provider are explicitly out of scope.
+
+## D-005 - 2026-08-29 - Provision the managed production path
+
+For the authorized production release, use Vercel to host the Next.js application and a private Supabase Storage bucket plus Supabase Postgres for mutable data. Keep the existing single-administrator, server-side password and signed-cookie boundary for this personal portal; the Supabase service-role key is server-only and never reaches the browser. Public comments remain plain text and pending until moderation. Library downloads are mediated by the application, so storage objects remain private.
+
+Status: provisional until the owner completes provider OAuth consent and the projects are created. This deployment authorization does not authorize accepting third-party terms or OAuth scopes on the owner's behalf.

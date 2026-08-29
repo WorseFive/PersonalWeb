@@ -10,9 +10,12 @@
     "test": "tsx --test tests/domain.test.ts",
     "test:functional": "node scripts/run-functional-tests.mjs",
     "test:functional:production": "node scripts/run-functional-tests.mjs --production",
+    "test:supabase": "node scripts/run-supabase-contract-tests.mjs",
+    "test:live": "node scripts/run-live-production-tests.mjs",
     "verify": "npm run typecheck && npm run test && npm run build && npm run test:functional && npm run test:functional:production"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.112.4",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
