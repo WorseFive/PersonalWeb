@@ -1,0 +1,14 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+coverage/
+
+# Secrets and local provider state
+.env
+.env.local
+.env.*.local
+.vercel/
+
+# Retained downloaded research snapshots; provenance is tracked in docs/SOURCE-LEDGER.md.
+research/upstream-skills/
