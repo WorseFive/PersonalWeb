@@ -29,3 +29,9 @@ Status: accepted for the local first release. Public visitor uploads, self-servi
 For the authorized production release, use Vercel to host the Next.js application and a private Supabase Storage bucket plus Supabase Postgres for mutable data. Keep the existing single-administrator, server-side password and signed-cookie boundary for this personal portal; the Supabase service-role key is server-only and never reaches the browser. Public comments remain plain text and pending until moderation. Library downloads are mediated by the application, so storage objects remain private.
 
 Status: provisional until the owner completes provider OAuth consent and the projects are created. This deployment authorization does not authorize accepting third-party terms or OAuth scopes on the owner's behalf.
+
+## D-006 - 2026-08-29 - Use a private GitHub deployment source
+
+Create `WorseFive/PersonalWeb` as the private source repository for the Vercel project. The site remains publicly reachable after deployment, while source history and server-side configuration stay private.
+
+Status: implemented. The initial production-adapter commit is pushed to `main`.
