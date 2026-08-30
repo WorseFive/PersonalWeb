@@ -346,3 +346,18 @@ Next concrete step: stage only tracked source/docs/editor content (build outputs
 Commit 9126542 已推送到 origin/main，Actions run 33291208983 首次执行时在根目录类型检查失败。失败原因是根 tsconfig 的通配包含独立 Tauri 编辑器文件，而 Pages 构建只安装网站根依赖，无法解析 editor 专属的 @tauri-apps/api。已将 editor 加入根 tsconfig exclude；编辑器继续由自身的 npm run check/build 和 Rust 测试验证。
 
 Next concrete step: push this CI 修复，等待新的 Pages Actions 成功，再对新版本 Library 和静态 URL 做线上验收。
+
+## 2026-08-30 — Actions 与线上验收完成
+
+Status: 本轮代码、文档、编辑器功能和 GitHub Pages 发布全部完成。
+
+- 修复后的提交 f51647f 已推送到 origin/main。
+- GitHub Actions run 33291244575 成功，build 与 deploy 两个 job 均通过。
+- 线上首页、Library、404、robots.txt、sitemap.xml 均返回 HTTP 200。
+- 线上 Library 显示空架，HTML 中 PDF 链接数为 0；这与 GitHub main 递归树和本地工作树均为 0 个 PDF 完全一致。
+- 本轮没有伪造 PDF、没有错误同步非 PDF 文件；未来将真实 PDF 放入仓库后，编辑器和双向静态门禁会自动约束 Library 条目完整性。
+
+线上地址：https://worsefive.github.io/PersonalWeb/
+Actions：https://github.com/WorseFive/PersonalWeb/actions/runs/33291244575
+
+最终下一步：使用 editor/src-tauri/target/release/bundle/nsis/PersonalWeb Editor_0.1.0_x64-setup.exe 安装编辑器，选择真实且已批准公开的 PDF，上传后按“验证 → 检查 diff → commit → push → Actions → 线上 Library/PDF URL”流程发布。该安装包属于本地忽略构建产物，不在 GitHub 仓库中。
