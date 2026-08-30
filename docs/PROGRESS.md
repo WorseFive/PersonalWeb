@@ -361,3 +361,17 @@ Status: 本轮代码、文档、编辑器功能和 GitHub Pages 发布全部完�
 Actions：https://github.com/WorseFive/PersonalWeb/actions/runs/33291244575
 
 最终下一步：使用 editor/src-tauri/target/release/bundle/nsis/PersonalWeb Editor_0.1.0_x64-setup.exe 安装编辑器，选择真实且已批准公开的 PDF，上传后按“验证 → 检查 diff → commit → push → Actions → 线上 Library/PDF URL”流程发布。该安装包属于本地忽略构建产物，不在 GitHub 仓库中。
+
+## 2026-08-30 — 正式验证协议固化到 Web Creator skill
+
+Status: 已将本项目正式验收标准写入集中版 Web Creator skill，后续所有 PersonalWeb 的实现、上传、部署和视觉验收必须执行该协议。
+
+- 新增 10 个验证阶段、90 个编号检查点：范围清单、环境基线、代码构建、真实 Markdown 编辑器端到端、PDF 安全上传、全部仓库 PDF 同步、桌面编辑器权限、网站视觉与无障碍、GitHub Actions/线上发布、证据回归与清理。
+- 明确禁止使用坐标盲点、盲键盘序列、只有截图的交互证明或直接 Rust 命令调用来冒充真实编辑器 UI 验收。
+- 明确 0 个 PDF 只能证明源清单为空，不能证明 PDF 上传功能成功。
+- 明确单元测试、截图、本地构建和 Actions 各自的证据边界，只有“真实 UI → 文件 → 构建 → diff → commit/push → Actions → 线上结果”链路完整才可报告完成。
+- 使用 PYTHONUTF8=1 python .../quick_validate.py 通过技能结构校验；默认编码运行因 Windows GBK 无法读取 UTF-8 中文文件，已记录为工具兼容性问题。
+
+Affected external skill: D:/LaTeX/Projects/Skills/web-creator/SKILL.md. Affected repository record: docs/PROGRESS.md.
+
+Next concrete step: 后续重新执行 Markdown/PDF 真实编辑器验收时，必须先提供稳定 DOM/accessibility/WebDriver 定位器和逐项 PASS/FAIL/N/A 证据，再开始任何发布操作。
