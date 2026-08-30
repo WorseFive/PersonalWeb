@@ -340,3 +340,9 @@ Release artifacts (ignored build output, not committed): personalweb-editor.exe 
 PDF sync result: GitHub main recursive tree and local worktree both contain zero .pdf files. There are therefore zero files to copy and zero Library PDF cards to publish in this release.
 
 Next concrete step: stage only tracked source/docs/editor content (build outputs remain ignored), commit, push origin/main, monitor GitHub Actions, and rerun online Library acceptance.
+
+## 2026-08-30 — 首次推送后的 Actions 修复
+
+Commit 9126542 已推送到 origin/main，Actions run 33291208983 首次执行时在根目录类型检查失败。失败原因是根 tsconfig 的通配包含独立 Tauri 编辑器文件，而 Pages 构建只安装网站根依赖，无法解析 editor 专属的 @tauri-apps/api。已将 editor 加入根 tsconfig exclude；编辑器继续由自身的 npm run check/build 和 Rust 测试验证。
+
+Next concrete step: push this CI 修复，等待新的 Pages Actions 成功，再对新版本 Library 和静态 URL 做线上验收。
