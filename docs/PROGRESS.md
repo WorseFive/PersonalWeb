@@ -9,6 +9,7 @@ Status: zero-cost GitHub Pages release 1 is deployed and verified. Remaining wor
 - Configured GitHub Pages with `build_type=workflow`, HTTPS enforcement enabled, and the `github-pages` environment.
 - GitHub Actions run [33287103807](https://github.com/WorseFive/PersonalWeb/actions/runs/33287103807) completed successfully.
 - Published URL: [https://worsefive.github.io/PersonalWeb/](https://worsefive.github.io/PersonalWeb/).
+- Documentation closeout commit `d89654d8adbc48161d2c73c1e6e4f68e4829752c` was published by GitHub Actions run [33287284664](https://github.com/WorseFive/PersonalWeb/actions/runs/33287284664), which also completed successfully.
 - Online HTTP checks returned 200 for home, About, blog index, all 3 articles, library, robots, sitemap, and OG SVG.
 - Online Chromium checks at 1440×900 and 390×844 passed for all public routes with no horizontal overflow, console errors, page errors, or failed resource responses.
 - Online keyboard checks reached the wordmark, navigation, and channel links with visible 3px focus outlines. Canonical and OG URLs point to the final Pages project-site URL.
