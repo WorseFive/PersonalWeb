@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
-import { publicSiteUrl } from "@/lib/site";
+import { absoluteSiteUrl } from "@/lib/site";
+
+export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = publicSiteUrl();
   return {
     rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/api/"] },
-    ...(siteUrl ? { sitemap: new URL("/sitemap.xml", siteUrl).toString() } : {})
+    ...(absoluteSiteUrl("sitemap.xml") ? { sitemap: absoluteSiteUrl("sitemap.xml")! } : {})
   };
 }

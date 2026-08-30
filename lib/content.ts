@@ -1,3 +1,8 @@
+import "server-only";
+
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 export type Post = {
   slug: string;
   title: string;
@@ -8,47 +13,42 @@ export type Post = {
   paragraphs: string[];
 };
 
-export const posts: Post[] = [
-  {
-    slug: "the-library-is-a-user-interface",
-    title: "The library is a user interface",
-    excerpt: "Why a personal website should feel navigable before it feels impressive.",
-    date: "2026-08-29",
-    cover: "blue",
-    tags: ["Design", "Portal"],
-    paragraphs: [
-      "A personal portal is not a single landing page. It is a small collection of rooms: a place to read, a place to find resources, and a place to return to work already in progress.",
-      "The homepage borrows Wii's calm, reachable channels. The library borrows the early iBooks shelf only where a collection metaphor helps. Reading itself stays quiet, sharp, and text-first.",
-      "The goal is not nostalgia for its own sake. Familiar material cues can explain hierarchy, but they should never conceal the action a visitor needs to take."
-    ]
-  },
-  {
-    slug: "notes-on-controlled-sharing",
-    title: "Notes on controlled sharing",
-    excerpt: "Public downloads and public comments need different kinds of restraint.",
-    date: "2026-08-28",
-    cover: "coral",
-    tags: ["Security", "Writing"],
-    paragraphs: [
-      "A download is a published object with a stable identity. A comment is a request to join a conversation. Treating both as anonymous files makes moderation and accountability difficult.",
-      "This first release therefore keeps uploads behind the administrator boundary and sends public comments to moderation. The production adapter can later replace local storage with managed policies, not with a weaker client-side shortcut.",
-      "Small systems earn trust when their boundaries are easy to understand: what is public, who can change it, and what happens when an input is rejected."
-    ]
-  },
-  {
-    slug: "a-shelf-is-not-a-dashboard",
-    title: "A shelf is not a dashboard",
-    excerpt: "A compact rule for keeping skeuomorphism useful rather than noisy.",
-    date: "2026-08-27",
-    cover: "green",
-    tags: ["UI", "Typography"],
-    paragraphs: [
-      "A shelf explains a collection. It does not explain every control, status message, or paragraph. Material styling belongs where it reveals an object and should disappear where it would compete with meaning.",
-      "That distinction also makes a website easier to maintain. A handful of tokens for paper, wood, gloss, and focus is enough; scattered background images are not a design system.",
-      "The most important visual effect remains a readable sentence with an obvious next step."
-    ]
-  }
-];
+const postSlugs = [
+  "the-library-is-a-user-interface",
+  "notes-on-controlled-sharing",
+  "a-shelf-is-not-a-dashboard"
+] as const;
+
+function parseFrontmatter(source: string) {
+  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) throw new Error("Blog content must contain YAML-like frontmatter.");
+  const fields = Object.fromEntries(match[1].split(/\r?\n/).map((line) => {
+    const separator = line.indexOf(":");
+    if (separator < 0) throw new Error(`Invalid blog frontmatter line: ${line}`);
+    return [line.slice(0, separator).trim(), line.slice(separator + 1).trim()];
+  }));
+  return { fields, body: match[2].trim() };
+}
+
+function readPost(slug: string): Post {
+  const source = readFileSync(path.join(process.cwd(), "content", "blog", `${slug}.md`), "utf8");
+  const { fields, body } = parseFrontmatter(source);
+  const cover = fields.cover as Post["cover"];
+  if (!["blue", "coral", "green"].includes(cover)) throw new Error(`Unsupported cover for ${slug}.`);
+  const paragraphs = body.split(/\r?\n\s*\r?\n/).map((paragraph) => paragraph.trim()).filter(Boolean);
+  if (paragraphs.length === 0) throw new Error(`Blog post ${slug} has no body paragraphs.`);
+  return {
+    slug,
+    title: fields.title,
+    excerpt: fields.excerpt,
+    date: fields.date,
+    cover,
+    tags: fields.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+    paragraphs
+  };
+}
+
+export const posts = postSlugs.map(readPost).sort((a, b) => b.date.localeCompare(a.date));
 
 export function getPost(slug: string) {
   return posts.find((post) => post.slug === slug);

@@ -13,7 +13,7 @@ const dataDir = await mkdtemp(join(tmpdir(), "personalweb-functional-"));
 const nextCli = resolve(root, "node_modules", "next", "dist", "bin", "next");
 const child = spawn(process.execPath, [nextCli, productionMode ? "start" : "dev", "--hostname", "127.0.0.1", "--port", String(port)], {
   cwd: root,
-  env: { ...process.env, PORTAL_DATA_DIR: dataDir, ADMIN_PASSWORD: "functional-admin", SESSION_SECRET: "functional-session-secret-at-least-thirty-two-chars" },
+  env: { ...process.env, PORTAL_DATA_DIR: dataDir, ADMIN_PASSWORD: "functional-admin", SESSION_SECRET: "functional-session-secret-at-least-thirty-two-chars", SITE_URL: baseUrl },
   stdio: ["ignore", "pipe", "pipe"]
 });
 
@@ -47,6 +47,23 @@ try {
   const publicHome = await fetch(`${baseUrl}/`);
   assert.equal(publicHome.status, 200);
   assert.match(await publicHome.text(), /WorseFive&apos;s Cabinet|WorseFive's Cabinet/);
+
+  for (const [pathname, marker] of [["/about", "A small public working room"], ["/blog", "Take one volume down"], ["/library", "Resources with a proper shelf"], ["/robots.txt", "Disallow: /admin"], ["/sitemap.xml", "the-library-is-a-user-interface"], ["/icon.svg", "<svg"]]) {
+    const response = await fetch(`${baseUrl}${pathname}`);
+    assert.equal(response.status, 200, `${pathname} should be reachable`);
+    assert.match(await response.text(), new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${pathname} should contain its expected marker`);
+  }
+  const openGraph = await fetch(`${baseUrl}/opengraph-image`);
+  assert.equal(openGraph.status, 200);
+  assert.match(openGraph.headers.get("content-type") ?? "", /^image\/png/);
+  assert.deepEqual(Array.from(new Uint8Array(await openGraph.arrayBuffer())).slice(1, 4), [80, 78, 71]);
+  const article = await fetch(`${baseUrl}/blog/the-library-is-a-user-interface`);
+  assert.equal(article.status, 200);
+  const articleHtml = await article.text();
+  assert.match(articleHtml, /Why a personal website should feel navigable/);
+  assert.match(articleHtml, /<title>.*The library is a user interface/);
+  assert.match(articleHtml, /Why a personal website should feel navigable before it feels impressive/);
+  assert.equal((await fetch(`${baseUrl}/missing-shelf`)).status, 404);
 
   const comment = await fetch(`${baseUrl}/api/comments`, {
     method: "POST",

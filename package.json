@@ -8,11 +8,11 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/domain.test.ts",
-    "test:functional": "node scripts/run-functional-tests.mjs",
-    "test:functional:production": "node scripts/run-functional-tests.mjs --production",
-    "test:supabase": "node scripts/run-supabase-contract-tests.mjs",
-    "test:live": "node scripts/run-live-production-tests.mjs",
-    "verify": "npm run typecheck && npm run test && npm run build && npm run test:functional && npm run test:functional:production"
+    "check:project": "node scripts/check-project.mjs",
+    "check:release": "node scripts/check-release-boundary.mjs",
+    "test:static": "node scripts/test-static.mjs",
+    "verify:static": "npm run check:project && npm run check:release && npm run typecheck && npm run test && npm run build && npm run test:static",
+    "verify": "npm run verify:static"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.112.4",

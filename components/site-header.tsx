@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { sitePath } from "@/lib/site";
 
 const links = [
   ["Home", "/"],
@@ -10,14 +10,13 @@ const links = [
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <Link className="wordmark" href="/" aria-label="WorseFive's Cabinet home">
+      <a className="wordmark" href={sitePath("/")} aria-label="WorseFive's Cabinet home">
         <span className="wordmark-mark">W</span>
         <span>WorseFive&apos;s Cabinet</span>
-      </Link>
+      </a>
       <nav aria-label="Primary navigation">
-        {links.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+        {links.map(([label, href]) => <a key={href} href={sitePath(href)}>{label}</a>)}
       </nav>
-      <Link className="admin-link" href="/admin">Admin</Link>
     </header>
   );
 }

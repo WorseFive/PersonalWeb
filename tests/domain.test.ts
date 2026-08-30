@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createAdminSession, isValidAdminSession, passwordMatches } from "../lib/auth";
+import { createAdminSession, isValidAdminSession, passwordMatches } from "../legacy/server-only/lib/auth";
 import { MAX_UPLOAD_BYTES, validateCommentInput, validateMagicBytes, validateUploadMetadata } from "../lib/validation";
 
 process.env.ADMIN_PASSWORD = "functional-admin-password";

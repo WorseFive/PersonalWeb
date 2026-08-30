@@ -1,28 +1,21 @@
-import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
-import { listResources } from "@/lib/store";
+import { resources } from "@/lib/resources";
+import { sitePath } from "@/lib/site";
 
-export const dynamic = "force-dynamic";
-
-function displaySize(bytes: number) {
-  return bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`;
-}
-
-export default async function LibraryPage() {
-  const resources = await listResources();
+export default function LibraryPage() {
   return (
     <main className="library-page">
       <SiteHeader />
       <section className="library-intro">
         <p className="eyebrow">Open library</p>
         <h1>Resources with a proper shelf.</h1>
-        <p>Every file is served through a resource record instead of a guessed storage path.</p>
+        <p>Approved public resources are published as ordinary Git-tracked links or files.</p>
       </section>
       <section className="resource-shelf" aria-label="Downloadable resources">
-        {resources.map((resource) => <article className="resource-card" key={resource.id}>
-          <span className="resource-type">{resource.mediaType === "text/plain" ? "TXT" : resource.mediaType === "application/pdf" ? "PDF" : "PNG"}</span>
-          <h2>{resource.title}</h2><p>{resource.description}</p><small>{resource.sourceName} · {displaySize(resource.size)}</small>
-          <Link className="primary-button" href={`/api/library/${resource.id}/download`}>Download</Link>
+        {resources.length === 0 ? <p className="empty-state">The shelf is empty for now. Published resources will appear here.</p> : resources.map((resource) => <article className="resource-card" key={resource.id}>
+          <span className="resource-type">{resource.type}</span>
+          <h2>{resource.title}</h2><p>{resource.description}</p><small>{resource.sourceName}{resource.size ? ` · ${resource.size}` : ""}</small>
+          <a className="primary-button" href={sitePath(resource.href)}>Open resource</a>
         </article>)}
       </section>
     </main>

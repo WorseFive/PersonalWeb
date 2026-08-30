@@ -7,7 +7,7 @@
 | Narravo | https://github.com/sphildreth/narravo | Self-hostable portal reference with accounts, comments, moderation, uploads, and administration. |
 | bloggr | https://github.com/Antibody/bloggr | Next.js + Supabase blog and administration reference. |
 | u-blog | https://github.com/U-C4N/u-blog | Personal blog/portfolio reference with uploads and Supabase. |
-| next-markdown-journal | https://github.com/Jeff-Russ/next-markdown-journal | Static editorial baseline and Giscus-style comment integration reference. |
+| next-markdown-journal | https://github.com/Jeff-Russ/next-markdown-journal | Static editorial baseline and GitHub-hosted comment integration reference. |
 
 ## Visual research
 
@@ -31,8 +31,19 @@ Stored at `research/upstream-skills` and pinned in `D:\LaTeX\Projects\Skills\web
 
 | Source | URL | Why retained |
 | --- | --- | --- |
-| Next.js App Router | https://nextjs.org/docs/app | Current routing, server/client component, and project-structure guidance. |
-| Supabase Auth with Next.js | https://supabase.com/docs/guides/auth/quickstarts/nextjs | Current server-compatible authentication setup guidance. |
-| Supabase Row Level Security | https://supabase.com/docs/guides/database/postgres/row-level-security | Per-table authorization and policy-test baseline. |
-| Supabase Storage access control | https://supabase.com/docs/guides/storage/security/access-control | Per-object storage policy baseline. |
-| OWASP File Upload Cheat Sheet | https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html | File allowlist, server-side validation, generated naming, size-limit, and storage-separation baseline. |
+| GitHub Pages overview | https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages | Confirms Pages serves static HTML/CSS/JavaScript and documents GitHub Free repository eligibility. |
+| Create a GitHub Pages site | https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site | Documents repository setup and publishing a site. |
+| GitHub Pages limits | https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits | Records the 1 GB site, soft bandwidth, deployment-time, and build-frequency constraints used by the plan. |
+| GitHub Pages custom workflows | https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages | Official Actions pattern for configuring Pages, uploading an artifact, and deploying it. |
+| Next.js Static Exports | https://nextjs.org/docs/app/guides/static-exports | Confirms `output: "export"` generates an `out/` static artifact and identifies unsupported server-dependent features. |
+| Giscus | https://giscus.app/ | Optional GitHub Discussions comment path; requires a public repository, Discussions, the App, and GitHub identity. |
+| Next.js App Router | https://nextjs.org/docs/app | Current routing and server/client component guidance. |
+| Supabase Auth with Next.js | https://supabase.com/docs/guides/auth/quickstarts/nextjs | Future dynamic-hosting authentication reference only. |
+| Supabase Row Level Security | https://supabase.com/docs/guides/database/postgres/row-level-security | Future dynamic data authorization reference only. |
+| Supabase Storage access control | https://supabase.com/docs/guides/storage/security/access-control | Future private-storage authorization reference only. |
+| OWASP File Upload Cheat Sheet | https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html | Future dynamic upload validation reference only. |
+| Render Next.js deployment | https://render.com/docs/deploy-nextjs-app | Future full Node.js hosting fallback; not required for zero-cost release 1. |
+| Railway Next.js deployment | https://docs.railway.com/guides/nextjs | Future full Node.js hosting fallback; not required for zero-cost release 1. |
+| Cloudflare Pages Next.js | https://developers.cloudflare.com/pages/framework-guides/nextjs/ | Alternative static/adapter reference; GitHub Pages remains the selected zero-cost target. |
+| Cloudflare Workers Next.js | https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/ | Future full-stack compatibility reference; not needed for the static release. |
+| Fly.io Next.js | https://fly.io/docs/js/frameworks/nextjs/ | Future Docker/server fallback; not needed for the static release. |

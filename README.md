@@ -1,34 +1,71 @@
 # PersonalWeb
 
-Personal portal project: a Wii-inspired home portal with an early-iPhone/iBooks-inspired library for writing, resources, and downloads.
+PersonalWeb is a Wii-inspired personal portal with an early-iPhone/iBooks-inspired library for writing and public resources.
+
+The first release follows one hard constraint: zero payment. It is a static Next.js site built by GitHub Actions and hosted on GitHub Pages. Git commits are the content-management workflow.
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Decisions](docs/DECISIONS.md)
+- [Delivery plan](docs/PLAN.md)
 - [Progress](docs/PROGRESS.md)
 - [Research sources](docs/SOURCE-LEDGER.md)
 
-## Development and production adapters
+## Release-1 scope
 
-The portal includes public writing and library routes, moderated public comments, an administrator login, administrator-only uploads, server-mediated downloads, resource removal, and SEO metadata. Development uses the ignored file-backed adapter outside `public/`. Production automatically switches to Supabase when all three Supabase runtime values are configured.
+Included:
 
-1. Copy `.env.example` to `.env.local` and set a strong administrator password and a session secret of at least 32 characters.
-2. Run `npm install`, then `npm run dev`.
-3. Open `http://127.0.0.1:3000`; sign in at `/admin` to moderate comments and upload an allowed `.txt`, `.pdf`, or `.png` resource.
+- static home, About, blog, and library pages;
+- Markdown articles under `content/blog`;
+- owner-approved public resource links or small public files;
+- responsive Wii/iBooks visual system;
+- static favicon, Open Graph image, robots, sitemap, and 404 page;
+- GitHub Actions build and GitHub Pages publication.
 
-## Production release (Vercel + Supabase)
+Deferred because GitHub Pages has no server runtime:
 
-1. Create a Supabase project, run [the production migration](supabase/migrations/20260829_000001_portal_production.sql) in its SQL Editor, and copy the Project URL, anon key, and service-role key. The migration creates all tables, indexes, RLS denials, atomic database-backed comment limits, audit history, and the private `portal-resources` bucket.
-2. Create a Vercel project from this repository and set `ADMIN_PASSWORD`, `SESSION_SECRET`, `RATE_LIMIT_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET=portal-resources`, and `SITE_URL`. Keep every secret server-only; do not use a `NEXT_PUBLIC_` prefix.
-3. Deploy to production. After the production URL exists, run the two credentialed acceptance scripts shown below. They create only temporary objects/comments and remove or reject them before exiting.
+- administrator login and moderation console;
+- Supabase runtime/database access and all Supabase keys;
+- comments and comment APIs;
+- uploads, private files, and server-mediated downloads;
+- mutable content and private access control.
 
-## Verification
+Giscus may be considered later if the owner approves a public repository, GitHub Discussions, the giscus App, and GitHub-account-only comments.
 
-- `npm run typecheck`
-- `npm run test`
-- `npm run build`
-- `npm run test:functional`
-- `npm run test:functional:production`
-- `npm run test:supabase` (requires the four Supabase test variables, including `SUPABASE_ANON_KEY`)
-- `npm run test:live` (requires `PORTAL_TEST_BASE_URL` and `PORTAL_TEST_ADMIN_PASSWORD`)
+## Local development
 
-`npm run verify` is the complete local gate. A public release additionally requires `npm run test:supabase` and `npm run test:live` to pass against the actual provider and deployed HTTPS URL.
+Install the locked dependencies and run the normal development server:
+
+```powershell
+npm ci
+npm run dev
+```
+
+The static migration target is configured in `docs/PLAN.md`. Before static export is implemented, the repository still contains historical dynamic routes for local/future-server testing; they are not evidence that GitHub Pages can run those features.
+
+## Static verification target
+
+The complete release-1 local gate is intended to be:
+
+```powershell
+npm ci
+npm run check:project
+npm run check:release
+npm run typecheck
+npm run test
+npm run build
+npm run test:static
+```
+
+`npm run build` must generate `out/`. `npm run test:static` must verify routes, assets, public-boundary safety, secret absence, and the absence of broken dynamic-entry claims once the migration is implemented.
+
+## GitHub Pages publication
+
+The preferred project-site URL is:
+
+```text
+https://worsefive.github.io/PersonalWeb/
+```
+
+This requires the owner to authorize the repository visibility and select GitHub Actions under Settings → Pages. The agent must not change repository visibility, create accounts, add a paid plan, change DNS, or publish externally without that authorization.
+
+Render, Vercel, Supabase, Railway, and Docker/VPS remain documented only as future dynamic-hosting options if the owner later restores login, comments, uploads, private files, or database-backed content.

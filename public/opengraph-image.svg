@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">WorseFive&apos;s Cabinet</title>
+  <desc id="description">A quiet cabinet for work worth returning to.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#dff4ff" />
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6cc8ed" />
+      <stop offset="1" stop-color="#2275af" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)" />
+  <g fill="#2275af" font-family="Arial, Helvetica, sans-serif">
+    <rect x="72" y="72" width="56" height="56" rx="18" fill="url(#mark)" />
+    <text x="100" y="110" fill="#ffffff" font-size="34" font-weight="700" text-anchor="middle">W</text>
+    <text x="150" y="111" font-size="28" font-weight="700">WorseFive&apos;s Cabinet</text>
+    <text x="72" y="340" fill="#14213d" font-size="72" font-weight="800" letter-spacing="-4">A quiet cabinet for</text>
+    <text x="72" y="430" font-size="72" font-weight="800" letter-spacing="-4">work worth returning to.</text>
+    <text x="72" y="548" fill="#456781" font-size="26">Writing · Resources · Correspondence</text>
+  </g>
+</svg>

@@ -1,0 +1,4 @@
+research/
+.data/
+supabase/.temp/
+*.tsbuildinfo

@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true
+  reactStrictMode: true,
+  output: "export",
+  trailingSlash: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH?.trim() || "",
+  images: { unoptimized: true }
 };
 
 export default nextConfig;

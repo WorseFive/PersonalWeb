@@ -2,42 +2,82 @@
 
 ## D-001 — 2026-08-29 — Adopt a server-capable portal baseline
 
-Use GitHub for source control, Next.js App Router for the application, and a managed Auth + Postgres + object-storage provider such as Supabase for mutable data, comments, and uploads. GitHub Pages alone is insufficient for the required authenticated comments, moderation, and uploads.
+Use GitHub for source control, Next.js App Router for the application, and a managed Auth + Postgres + object-storage provider such as Supabase for mutable data, comments, and uploads.
 
-Status: accepted baseline; actual providers remain unselected.
+Status: historical baseline. Superseded for release 1 by D-013 after the owner made zero cost and GitHub hosting the first principles.
 
 ## D-002 — 2026-08-29 — Split the visual language by user task
 
 Use Wii-style navigation for the home portal and iBooks-style shelving for blog/resource collections. Keep reading pages quiet and accessible rather than heavily textured.
 
-Status: accepted design direction.
+Status: accepted and retained for both the static release and any future dynamic upgrade.
 
 ## D-003 — 2026-08-29 — Use a local development adapter before external provider setup
 
-Implement the first runnable release with a file-backed local adapter: JSON records in a configurable data directory, non-public file storage, public comments held for moderation, and administrator-only uploads guarded by environment-provided credentials and signed cookies. This makes all requested functions testable locally without creating a provider account or publishing the site.
+Implement the first runnable release with a file-backed local adapter so comments, moderation, uploads, and downloads can be exercised without an external provider.
 
-Status: accepted for local development only. Supabase or an equivalent production provider remains required before public deployment.
+Status: accepted for historical/local development only. It is not part of the GitHub Pages runtime.
 
-## D-004 - 2026-08-29 - Freeze release-1 write policy
+## D-004 — 2026-08-29 — Freeze the original release-1 write policy
 
-Keep article and library reading public. Accept visitor comments as plain text only, rate-limit them locally, and keep every new comment pending until an administrator publishes or rejects it. Restrict file creation to the administrator and accept only small TXT, PDF, and PNG files through a server-side allowlist and signature check.
+The original server release allowed public pending comments and administrator-only validated uploads.
 
-Status: accepted for the local first release. Public visitor uploads, self-service accounts, rich-text comments, and a production provider are explicitly out of scope.
+Status: historical dynamic scope. Those write paths are deferred by D-013; no public write API is shipped in the zero-cost static release.
 
-## D-005 - 2026-08-29 - Provision the managed production path
+## D-005 — 2026-08-29 — Provision the managed production path
 
-For the authorized production release, use Vercel to host the Next.js application and a private Supabase Storage bucket plus Supabase Postgres for mutable data. Keep the existing single-administrator, server-side password and signed-cookie boundary for this personal portal; the Supabase service-role key is server-only and never reaches the browser. Public comments remain plain text and pending until moderation. Library downloads are mediated by the application, so storage objects remain private.
+The original plan selected Vercel with Supabase Postgres and private Storage for the dynamic portal.
 
-Status: implemented for Supabase project `gmtkndehijhnmmpnugkw` (Singapore) and Vercel project `prj_XagMfjjC7JuSjpQqRa6BAE1TUYkR`. The intended public Vercel deployment remains blocked by the provider control plane; see D-007 and `docs/PROGRESS.md`.
+Status: historical implementation record. Superseded as the first-release target by D-013. Existing provider resources must not be treated as required by the static build.
 
-## D-006 - 2026-08-29 - Use a private GitHub deployment source
+## D-006 — 2026-08-29 — Use a private GitHub deployment source
 
-Create `WorseFive/PersonalWeb` as the private source repository for the Vercel project. The site remains publicly reachable after deployment, while source history and server-side configuration stay private.
+The original Vercel plan used `WorseFive/PersonalWeb` as a private source repository.
 
-Status: implemented. The initial production-adapter commit is pushed to `main`.
+Status: historical provider decision. GitHub Free Pages eligibility may require a public repository; visibility remains an owner-only decision under D-013.
 
-## D-007 - 2026-08-29 - Preserve the Vercel release boundary while blocked
+## D-007 — 2026-08-29 — Preserve the Vercel release boundary while blocked
 
-The project is configured as Next.js, production secrets are set, deployment protection is disabled, and two direct production deployments were requested. Vercel still reports the deployments as `BLOCKED`/`UNKNOWN`, exposes only its building page, and records zero build duration and no logs. Do not substitute the building-page URL for a live site or weaken the Supabase boundary to work around this provider-side condition.
+The Vercel account/project path was recorded as blocked/unknown during earlier attempts.
 
-Status: blocked by the Vercel account or provider control plane. Resume the same release path after the Vercel Dashboard shows the account/project as eligible to build and deploy.
+Status: historical blocker. Vercel is removed from the critical path for release 1; no Dashboard recovery is required for the static plan.
+
+## D-008 — 2026-08-29 — Keep editorial content file-based
+
+Store blog posts as Git-tracked Markdown with frontmatter.
+
+Status: accepted and retained. Static export reads these files during the build.
+
+## D-009 — 2026-08-29 — Complete share metadata with generated brand assets
+
+Use a site icon, Open Graph image, article metadata, canonical URLs, robots, and sitemap.
+
+Status: accepted. Static export must produce these assets with the final Pages origin.
+
+## D-010 — 2026-08-29 — Separate CLI production release from GitHub identity eligibility
+
+Treat an owner CLI release and GitHub integration as independent Vercel paths.
+
+Status: historical provider decision; not a release-1 requirement.
+
+## D-011 — 2026-08-29 — Remove Vercel web login from the critical release path
+
+Render, Railway, or Docker/VPS were considered provider-portable alternatives after Vercel login trouble.
+
+Status: superseded for release 1 by D-013. Retained only as a future dynamic-hosting fallback.
+
+## D-012 — 2026-08-29 — Make Render the primary deployment target
+
+Render was selected as the dynamic replacement because its web interface was accessible.
+
+Status: superseded for release 1 by D-013. No Render service, paid service, DNS change, or production traffic switch was authorized by this decision.
+
+## D-013 — 2026-08-29 — Make zero-cost GitHub Pages the release-1 target
+
+The first principle is no payment. The only required deployment platform for release 1 is GitHub Pages, driven by GitHub Actions from the repository. To satisfy GitHub Pages' static-hosting boundary, release 1 is reduced to static home, About, Git-managed blog, public resource links/files, visual system, SEO assets, and 404 handling.
+
+Defer administrator login, HMAC sessions, Supabase runtime access, Supabase keys, private Storage, uploads, private downloads, resource deletion, server APIs, mutable comments, moderation queues, and live server tests. Do not leave broken controls that imply these features work. Giscus is an optional later choice only after explicit approval of a public repository, GitHub Discussions, the giscus App, GitHub-only commenter identity, and third-party script/privacy implications.
+
+The current repository must not be made public by the agent. Before Pages publication, the owner must either authorize public visibility or prepare a separate public Pages deployment repository. A paid GitHub plan, Render service, Vercel recovery, Supabase project, custom domain, DNS change, or external account creation is not required for the static release and must not be introduced to solve it.
+
+Status: accepted release direction; code migration, workflow, owner visibility decision, and Pages publication remain pending.

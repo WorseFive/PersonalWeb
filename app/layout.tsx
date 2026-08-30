@@ -4,6 +4,8 @@ import { publicSiteUrl } from "@/lib/site";
 
 const siteUrl = publicSiteUrl();
 
+export const dynamic = "error";
+
 export const metadata: Metadata = {
   title: "WorseFive's Cabinet",
   description: "A personal portal for writing, working notes, and carefully shared resources.",
@@ -12,8 +14,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "WorseFive's Cabinet",
-    description: "Writing, working notes, and carefully shared resources."
-  }
+    description: "Writing, working notes, and carefully shared resources.",
+    images: ["/opengraph-image.svg"]
+  },
+  twitter: { card: "summary_large_image", title: "WorseFive's Cabinet", description: "Writing, working notes, and carefully shared resources.", images: ["/opengraph-image.svg"] }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
