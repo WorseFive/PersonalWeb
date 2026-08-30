@@ -4,6 +4,21 @@
 
 > 本计划已根据最新约束重写：第一原则是零付费，第一发布平台是 GitHub Pages。Vercel 和 Render 不再是第一版发布前提，Supabase 不再是第一版必需依赖。第一版只交付可在 GitHub Pages 静态托管的公开网站；需要服务器、数据库、登录、上传、私有文件和动态写入的功能暂时删除或降级为后续方案。
 
+## 0. 2026-08-30 执行状态更新
+
+本计划中与 Wii UI、分级流体动画和本地内容编辑器相关的核心任务已经执行完成：
+
+- 首页已加入 Wii 风格增强、Canvas 流体光晕、移动端布局保护和 reduced-motion 行为；
+- `content/resources` 与 `public/resources` 已成为编辑器和静态站共用的公开资源边界；
+- `editor/` 已创建 Tauri 2 Windows 工程；
+- 编辑器已具备仓库检查、Markdown 文章编辑、资源元数据编辑、公开文件复制、本地 `npm run verify`、允许目录 diff、二次确认 commit 和 push；
+- Rust 层已实现路径白名单、路径穿越拒绝、敏感目录拒绝、UTF-8 文本限制、5 MB 公开资源限制和危险扩展名拒绝；
+- `npm run editor:check`、`npm run editor:build`、`npm run editor:test`、`cargo check`、`cargo tauri build` 均已通过；
+- 已生成 `personalweb-editor.exe`、NSIS 安装包和 MSI 安装包；
+- WebGL L2、动态评论、Supabase 运行时、管理员登录和私有上传仍按零费用静态边界排除，不属于未完成的核心任务。
+
+完整设计、风险和验收证据见 `docs/IMPLEMENTATION-REPORT-WII-EDITOR.md`。后续若继续工作，范围仅是安装包分发、代码签名、可选 WebGL 增强或用户批准的公开内容补充。
+
 本文是 PersonalWeb 的唯一执行计划。每个阶段完成后必须更新 `docs/PROGRESS.md`；如果改变架构、安全边界、公开范围、仓库可见性或供应商，必须同步更新 `docs/ARCHITECTURE.md` 和 `docs/DECISIONS.md`。除明确属于所有者账户、公开授权或外部验证的事项外，所有任务必须持续推进，不能以阶段性结果代替最终验收。
 
 ## 1. 当前状态与重新规划原因
@@ -908,3 +923,62 @@ https://<owner>.github.io/
 - 监控、备份、日志和防滥用系统。
 
 任何升级都必须重新记录费用、账户、公开边界、数据处理、密钥和验收标准。
+
+## 18. PDF publishing and repository synchronization plan
+
+### 18.1 Objective and boundary
+
+The objective is to make the local Windows editor capable of publishing an approved PDF into the static Library. “Upload” means copying into the local Git working tree and publishing through the existing GitHub Pages workflow. It does not mean anonymous website upload, private storage, or a database mutation.
+
+### 18.2 Editor implementation
+
+- Provide source path, Library title, description, and source name fields.
+- Validate the source is a regular file with a lowercase-insensitive .pdf extension.
+- Read the bytes and require the %PDF- signature; do not trust extension or browser MIME alone.
+- Enforce the 5 MiB public-file limit.
+- Generate a bounded safe slug from the public title.
+- Reject existing PDF or metadata targets rather than overwriting.
+- Write the PDF and frontmatter as one user-visible publishing operation.
+- Remove the newly copied PDF if metadata creation fails.
+- Return the two generated repository paths and byte size to the editor.
+- Keep the existing allowlist, secret checks, path traversal checks, symlink boundary checks, and explicit commit/push confirmations.
+
+### 18.3 Site integration
+
+- Keep PDF files under public/resources so static export copies them to out/resources.
+- Keep metadata under content/resources so the server build can enumerate it.
+- Parse quoted frontmatter values correctly.
+- Render every metadata record on Library with a basePath-aware link.
+- Keep the public-download warning visible in the editor.
+- Do not add an API route or claim that Pages supports runtime writes.
+
+### 18.4 Repository-wide PDF synchronization
+
+At each release, enumerate the default GitHub branch recursively and record path, size, and blob SHA. For every PDF found, preserve its repository content, copy it into public/resources with a safe non-colliding name, and create one content/resources metadata record. Never delete an existing source file as part of synchronization. If the recursive tree has no PDFs, record a zero-item sync and leave the Library empty. If a file exceeds the editor’s public size policy, stop and request an explicit policy decision instead of silently truncating or publishing it.
+
+The 2026-08-30 audit of WorseFive/PersonalWeb main returned zero PDF paths, and the local worktree also contained zero PDFs. Therefore this execution creates no artificial PDF entries; the automated one-to-one checks are ready for the next real PDF.
+
+### 18.5 Verification and acceptance criteria
+
+- TypeScript check and editor Vite build pass.
+- Rust tests cover safe slug generation, metadata quoting, valid upload, spoofed extension/signature rejection, size rejection, duplicate rejection, and cleanup behavior.
+- Project check rejects a PDF without Library metadata and metadata pointing to a missing PDF.
+- Static-output check confirms every local Library PDF is present under out/resources.
+- Full npm verify passes.
+- Tauri release build produces the editor EXE/installers.
+- Browser QA confirms Library layout at desktop and 390px, keyboard focus, no horizontal overflow, no console errors, and working PDF links when at least one PDF exists.
+- GitHub Actions succeeds after each pushed commit.
+- Pages returns 200 for home, Library, and every published PDF URL.
+
+### 18.6 Operating procedure for every future PDF
+
+1. Open the editor and inspect D:\PersonalWeb.
+2. Enter the absolute local PDF path and public metadata.
+3. Click upload; verify the generated PDF and Markdown paths.
+4. Run npm run verify from the editor.
+5. Inspect the allowlisted diff and confirm the content is public.
+6. Commit with a descriptive message.
+7. Push to main.
+8. Wait for the Pages workflow to complete.
+9. Check the Library card and direct PDF URL online.
+10. Record date, files, commit, Actions run, and URL in PROGRESS.md.

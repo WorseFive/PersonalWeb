@@ -81,3 +81,21 @@ Defer administrator login, HMAC sessions, Supabase runtime access, Supabase keys
 The current repository must not be made public by the agent. Before Pages publication, the owner must either authorize public visibility or prepare a separate public Pages deployment repository. A paid GitHub plan, Render service, Vercel recovery, Supabase project, custom domain, DNS change, or external account creation is not required for the static release and must not be introduced to solve it.
 
 Status: accepted and deployed as the zero-cost static release. The owner made the repository public, Pages was configured with `build_type=workflow`, and commit `ee95c23` was published successfully. Real About content and optional public resources remain owner-approved content inputs.
+
+## D-014 — 2026-08-30 — Propose a local-first Tauri editor for static publishing
+
+For the proposed next phase, keep the public site on the existing GitHub Pages static architecture and add a separate Windows Tauri 2 editor. The editor writes only approved public content into the local Git repository, validates it, shows the diff, and performs commit/push only after explicit user confirmation. It must not expose arbitrary filesystem access, store GitHub tokens in project files, modify secrets or workflows, or restore server-only functionality.
+
+Status: accepted and implemented. The editor source is under `editor/`; manual confirmation is required before commit and push. A future background/one-click publish mode would require a separate security review.
+
+## D-015 — 2026-08-30 — Use progressive motion with a non-WebGL baseline
+
+Implement Wii-inspired motion in layers: CSS baseline for every device, lightweight Canvas enhancement where appropriate, and optional WebGL fluid simulation only when capability and performance checks pass. `prefers-reduced-motion`, page visibility, low-power/mobile settings, and WebGL failure must all produce a usable fallback.
+
+Status: accepted and implemented for CSS + Canvas. WebGL remains an optional future enhancement. The fluid layer is decorative and does not obscure text, navigation, or keyboard focus.
+
+## D-016 — 2026-08-30 — Publish PDFs locally with generated Library metadata
+
+Keep PDF publishing compatible with zero-cost GitHub Pages. Add a dedicated local Tauri command that validates the extension, %PDF- signature, 5 MiB limit, safe target name, and duplicate target before copying a PDF. Generate the matching Git-tracked Library metadata in the same operation. Do not add a public browser upload endpoint, provider storage, authentication, or secret.
+
+Status: accepted and implemented. The editor exposes a PDF-specific form; Rust performs the validation and writes both public artifacts; project/static checks enforce the one-PDF/one-Library-entry contract. The current GitHub main tree contains zero PDFs, so the requested repository-wide sync has no source files to import and no fabricated placeholder is added.

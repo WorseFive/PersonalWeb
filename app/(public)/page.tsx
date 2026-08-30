@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/site-header";
+import { FluidBackground } from "@/components/fluid-background";
 import { sitePath } from "@/lib/site";
 
 const channels = [
@@ -10,13 +11,12 @@ const channels = [
 export default function HomePage() {
   return (
     <main className="portal-shell">
+      <FluidBackground />
       <SiteHeader />
       <section className="portal-hero">
         <p className="eyebrow">Personal portal</p>
-        <h1>A quiet cabinet for
-          <span>work worth returning to.</span>
-        </h1>
-        <p>Writing lives on paper. Resources live on shelves. Everything else begins with a clear door.</p>
+        <h1><span className="hero-title-line">A quiet cabinet</span><span className="hero-title-line hero-title-accent">for work worth<span className="mobile-break"><br /></span> returning to.</span></h1>
+        <p>Writing lives on paper. Resources live on shelves.<span className="mobile-break"><br /></span> Everything else begins with<span className="mobile-break"><br /></span> a clear door.</p>
       </section>
       <section className="channel-grid" aria-label="Portal channels">
         {channels.map((channel, index) => (

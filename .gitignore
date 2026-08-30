@@ -17,3 +17,9 @@ research/upstream-skills/
 
 # Provider CLI link metadata is local state, not source configuration.
 supabase/.temp/
+
+# Local Tauri editor build output
+editor/node_modules/
+editor/dist/
+editor/src-tauri/target/
+editor/src-tauri/gen/

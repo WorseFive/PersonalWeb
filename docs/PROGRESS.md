@@ -1,5 +1,54 @@
 # Progress log
 
+## 2026-08-30 - 最终构建、移动端复验与 EXE 启动冒烟完成
+
+Status: Wii UI、流体动画和本地编辑器实施闭环完成；没有执行未经授权的 GitHub push 或公开内容发布。
+
+- 修复首页移动端标题/正文的实际 Edge 截图裁切问题，并通过最终 1440×900 与 390×844 截图复验；频道卡片、导航和主要文字保持可见。
+- 修复编辑器 Rust 读取路径的符号链接越界校验，使读取和写入共用仓库范围保护。
+- 最新 `npm run verify`、`npm run editor:check`、`npm run editor:test`、`cargo check` 和 `cargo tauri build` 全部通过。
+- 最新 Windows 产物启动冒烟通过，进程成功启动后已停止测试进程。
+- 最新构建产物校验值：`personalweb-editor.exe` SHA-256 `CC8BD21819C992EBC6E16888163D0209E6DA76CF78484DFD22B983D956D56802`；NSIS SHA-256 `3B65F3D249F8722B67F206B704FCE7FDE9E46D84006B893F9B03F19E0F1FC8B9`；MSI SHA-256 `86A474A974C1DEE34993A5D6061B18D482CAD933A80F09BFD70D7539E04E1C91`。
+
+Verification: static route output contains 60 files and passes release-boundary inspection; Rust security tests 3/3 passed; EXE, NSIS and MSI generated successfully; final Edge screenshots were visually inspected. The only remaining optional work is user-side installation and an explicitly authorized push to trigger the real GitHub Actions deployment.
+
+## 2026-08-30 - Wii UI、Canvas 流体动画与本地编辑器核心实现完成
+
+Status: 本次实施目标完成。当前网站仍保持 GitHub Pages 零费用静态架构；编辑器作为本地 Tauri 2 应用提供受限内容发布工作流。
+
+- 新增 `components/fluid-background.tsx`，使用 CSS 兜底和轻量 Canvas 流体光晕；支持 DPR 限制、页面隐藏暂停、`prefers-reduced-motion` 关闭、WebGL 不存在时无需降级错误，并保持背景不拦截内容交互。
+- 增强首页 Wii 视觉状态和 390px 布局，修复真实 Edge 截图中发现的标题/正文裁切风险。
+- 将资源元数据接入 `content/resources/*.md`，并创建 `public/resources/` 公开文件边界；静态站会在构建期读取资源记录。
+- 新增 `editor/` Tauri 2 工程：博客 Markdown、资源元数据、公开文件复制、仓库检查、verify、diff、commit、push 确认、错误保留和安全提示。
+- Rust 命令层限制访问 `content/blog`、`content/resources`、`public/resources`，拒绝路径穿越、符号链接越界、密钥/运行时/工作流/legacy 路径、危险扩展名和超限文件。
+- 新增 `editor/README.md`、Tauri 权限配置、原创 SVG/ICO 图标和编辑器构建依赖；未保存任何 GitHub token。
+- 完成 Windows 构建产物：`editor/src-tauri/target/release/personalweb-editor.exe`、`bundle/nsis/PersonalWeb Editor_0.1.0_x64-setup.exe`、`bundle/msi/PersonalWeb Editor_0.1.0_x64_en-US.msi`。
+- 更新 `docs/PLAN.md`、`docs/ARCHITECTURE.md`、`docs/DECISIONS.md`、`docs/IMPLEMENTATION-REPORT-WII-EDITOR.md`，同步实际完成状态和明确排除项。
+
+Affected files: `app/(public)/page.tsx`, `app/globals.css`, `components/fluid-background.tsx`, `lib/resources.ts`, `content/resources/.gitkeep`, `public/resources/.gitkeep`, `scripts/check-project.mjs`, `package.json`, `.gitignore`, `editor/**`, and the project records under `docs/`.
+
+Verification: `npm run verify` passed; `npm run editor:check` passed; `npm run editor:test` passed with 3 Rust security tests; `cargo check --manifest-path editor/src-tauri/Cargo.toml` passed; `cargo tauri build` passed and generated EXE/NSIS/MSI; Edge screenshots at 1440px and 390px were inspected; `git diff --check` and strict UTF-8 checks passed. The only normal build notice is the local `SITE_URL` metadataBase warning when the production URL is not supplied.
+
+Next concrete step: install the generated Windows package on the target machine, test the real Tauri invoke flow with the user's Git credentials, then optionally push approved changes and verify the GitHub Actions Pages run. No public push was performed by this implementation run.
+
+## 2026-08-30 - Wii UI and local editor implementation report completed
+
+Status: analysis and implementation design complete; website code, deployment configuration, and editor source have not been modified.
+
+- Evaluated the feasibility of a Wii-inspired visual refresh with fluid motion under the zero-cost GitHub Pages constraint.
+- Defined a progressive motion strategy: CSS baseline, lightweight Canvas enhancement, and optional WebGL fluid simulation with capability detection, reduced-motion support, page-visibility pausing, mobile quality limits, and CSS/Canvas fallback.
+- Evaluated a local Windows Tauri 2 editor EXE that writes approved public content to the local Git repository, runs `npm run verify`, previews the diff, and requires explicit user confirmation before commit/push.
+- Recorded the editor's filesystem allowlist and denial boundary for secrets, `.git`, workflows, runtime data, Supabase temporary files, and `legacy/server-only`.
+- Reviewed and downloaded three external research cases to `C:\Users\33406\AppData\Local\Temp\PersonalWeb-ui-references`; they remain outside the repository and public build. License and attribution handling is recorded in `docs/SOURCE-LEDGER.md` and the implementation report.
+- Added the full report at `docs/IMPLEMENTATION-REPORT-WII-EDITOR.md`.
+- Added provisional decisions D-014 and D-015 and a proposed next-phase architecture section; these do not alter the current release runtime.
+
+Affected files: `docs/IMPLEMENTATION-REPORT-WII-EDITOR.md`, `docs/SOURCE-LEDGER.md`, `docs/DECISIONS.md`, `docs/ARCHITECTURE.md`, `docs/PROGRESS.md`.
+
+Verification: reviewed current repository architecture, decision log, progress log, package scripts, legacy server boundary, downloaded case directory, and source licenses; confirmed no website or deployment files were changed in this report-only phase.
+
+Next concrete step: obtain the owner's choices for the eight items in section 13 of the report, then implement only the approved scope in a separate reviewable change and repeat the static verification plus visual/browser acceptance gates.
+
 ## 2026-08-30 - GitHub Pages published and online acceptance completed
 
 Status: zero-cost GitHub Pages release 1 is deployed and verified. Remaining work is limited to owner-approved About text and optional public resources.
@@ -256,3 +305,38 @@ Status: complete; the former implementation status is superseded by the complete
 Verification: strict UTF-8 checks passed; `quick_validate.py` reports `Skill is valid!`; unfinished-marker scan, referenced-guide existence checks, and Git whitespace checks passed.
 
 Next concrete step: choose an owned hosting/data provider only when public deployment is authorized.
+
+## 2026-08-30 — PDF 本地发布到 Library 与仓库 PDF 同步审计
+
+Status: PDF 上传功能已实现，正在进行完整验证和 GitHub 推送。
+
+- 新增 Tauri Rust upload_pdf 命令：校验 .pdf 扩展名、%PDF- 文件头、5 MiB 上限、安全 slug、目标冲突，并在失败时清理半成品。
+- 编辑器右侧新增 PDF → Library 表单，输入本地路径、公开标题、描述和来源名称后，可自动生成 public/resources/<slug>.pdf 与 content/resources/<slug>.md。
+- 修复资源 frontmatter 双引号解析，确保生成的标题、描述和 href 不带 YAML 引号残留。
+- 项目检查和静态输出检查新增 PDF 与 Library 元数据双向一致性门禁。
+- GitHub API 对 WorseFive/PersonalWeb main 递归树审计结果为 0 个 PDF；本地工作树同样为 0 个 PDF，因此没有可同步的真实文件，也没有伪造占位 PDF。
+
+Affected files: editor/src/main.ts, editor/src/style.css, editor/src-tauri/src/main.rs, lib/resources.ts, scripts/check-project.mjs, scripts/test-static.mjs, docs/ARCHITECTURE.md, docs/DECISIONS.md, docs/PLAN.md, docs/IMPLEMENTATION-REPORT-WII-EDITOR.md, editor/README.md.
+
+Verification so far: editor TypeScript check, Vite build, cargo fmt, and 5 Rust tests passed before the final documentation/check-gate rerun. GitHub API PDF audit returned zero items.
+
+Next concrete step: rerun npm run verify, editor checks/tests, Tauri release build, browser/static QA, then commit and push each meaningful change and wait for GitHub Actions before online acceptance.
+
+## 2026-08-30 — 本轮实现最终本地验证
+
+Status: 本地实现与验收门禁完成，待本轮提交推送及 GitHub Actions 重建。
+
+Verification:
+
+- npm run verify passed: project boundary, release boundary, TypeScript, domain tests, Next static build, and static output inspection.
+- Editor TypeScript check and Vite production build passed.
+- Rust test suite passed 8/8, including valid PDF publication, spoofed signature rejection, oversize rejection, duplicate rejection, safe slug and YAML quoting.
+- cargo tauri build passed and produced EXE, NSIS and MSI installers.
+- git diff --check passed.
+- Existing online Pages routes returned HTTP 200 for home, Library, robots.txt and sitemap.xml before this new push.
+
+Release artifacts (ignored build output, not committed): personalweb-editor.exe SHA-256 7AEC178ADB12E3D6C94406EC944C4431DF9FD17E907C3A41049BF532705F136B; NSIS E538C66B56CEFF10A0B394D9A4B12D50E91D5693295FCD19EAD10ED08ADF7D3D; MSI 816AE34B55B9D90A2E3D9BC2C8298F5CBA803F2319A1BC4786C79751BBB449B9.
+
+PDF sync result: GitHub main recursive tree and local worktree both contain zero .pdf files. There are therefore zero files to copy and zero Library PDF cards to publish in this release.
+
+Next concrete step: stage only tracked source/docs/editor content (build outputs remain ignored), commit, push origin/main, monitor GitHub Actions, and rerun online Library acceptance.

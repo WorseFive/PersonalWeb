@@ -33,6 +33,19 @@ for (const slug of ["the-library-is-a-user-interface", "notes-on-controlled-shar
 }
 
 const html = files.filter((file) => file.endsWith(".html")).map((file) => readFileSync(path.join(output, file), "utf8")).join("\n");
+const resourceHrefs = new Set();
+const resourceDirectory = path.join(root, "content", "resources");
+if (existsSync(resourceDirectory)) for (const filename of readdirSync(resourceDirectory).filter((entry) => entry.endsWith(".md"))) {
+  const source = readFileSync(path.join(resourceDirectory, filename), "utf8");
+  const href = source.match(/^href:\s*"?([^"\r\n]+)"?\s*$/m)?.[1];
+  if (href?.startsWith("/resources/")) {
+    resourceHrefs.add(href.toLowerCase());
+    assert.ok(files.includes(href.slice(1)), "Library resource is missing from static output: " + href);
+  }
+}
+for (const file of files.filter((entry) => entry.startsWith("resources/") && entry.toLowerCase().endsWith(".pdf"))) {
+  assert.ok(resourceHrefs.has(("/" + file).toLowerCase()), "Static PDF is missing a Library metadata entry: " + file);
+}
 for (const forbidden of ["SUPABASE_SERVICE_ROLE_KEY", "ADMIN_PASSWORD", "SESSION_SECRET", "RATE_LIMIT_SECRET", "/admin", "/api/comments", "Control Room", "CommentSection"]) {
   assert.doesNotMatch(html, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `Forbidden release content found: ${forbidden}`);
 }

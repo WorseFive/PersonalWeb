@@ -47,3 +47,14 @@ Stored at `research/upstream-skills` and pinned in `D:\LaTeX\Projects\Skills\web
 | Cloudflare Pages Next.js | https://developers.cloudflare.com/pages/framework-guides/nextjs/ | Alternative static/adapter reference; GitHub Pages remains the selected zero-cost target. |
 | Cloudflare Workers Next.js | https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/ | Future full-stack compatibility reference; not needed for the static release. |
 | Fly.io Next.js | https://fly.io/docs/js/frameworks/nextjs/ | Future Docker/server fallback; not needed for the static release. |
+
+## Wii UI and motion research
+
+| Source | URL | License / handling | Why retained |
+| --- | --- | --- | --- |
+| wii-menu-page | https://github.com/cornetespoir/wii-menu-page | No clear SPDX license detected; research and visual inspiration only, no direct code/assets copied. | Wii-style channel grid, rounded cards, gradients, shadows, and status-bar ideas. |
+| WebGL-Fluid-Simulation | https://github.com/PavelDoGreat/WebGL-Fluid-Simulation | MIT; retain copyright and license if code is integrated. | GPU fluid simulation, pointer/touch interaction, quality controls, and fallback requirements. |
+| LiquidDistortion | https://github.com/codrops/LiquidDistortion | Custom terms in README; preserve attribution and audit PixiJS, GSAP, and example-image licenses separately. | Liquid displacement and transition ideas; downloaded for study, not bundled into the site. |
+| Tauri | https://tauri.app/start/ | Official documentation; implementation reference. | Local Windows editor architecture, file access, security, and packaging. |
+| Tauri security | https://tauri.app/security/ | Official documentation; implementation reference. | Capability and permission boundary for a local editor. |
+| Tauri distribute | https://tauri.app/distribute/ | Official documentation; implementation reference. | Windows installer/EXE distribution and signing considerations. |

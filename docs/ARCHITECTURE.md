@@ -159,3 +159,41 @@ The Supabase contract test, `npm run test:live`, server functional tests, upload
 ## Architectural status
 
 The repository contains the static release implementation and a recoverable `legacy/server-only/` copy of the former dynamic implementation. Commit `ee95c23` was published through GitHub Actions run `33287103807`; the Pages URL is `https://worsefive.github.io/PersonalWeb/`. Render/Vercel/Supabase configuration is not part of the GitHub Pages runtime. Real owner-approved About details and additional public resources remain content inputs, not hosting blockers.
+
+## Implemented local editor and progressive motion extension
+
+```text
+Windows Tauri 2 editor
+      ↓ restricted local filesystem access
+PersonalWeb working tree
+      ↓ user-confirmed Git commit and push
+GitHub repository
+      ↓ GitHub Actions
+Static Next.js export
+      ↓
+GitHub Pages
+```
+
+The editor is a local content-authoring tool, not a web server and not a GitHub Pages upload endpoint. Its Rust command layer enforces an allowlist limited to `content/blog`, `content/resources`, and `public/resources`, with explicit denial for `.git`, `.env*`, `.data`, `.vercel`, `supabase/.temp`, `.github/workflows`, and `legacy/server-only`. The editor displays a diff and requires explicit confirmation before commit and push. Tokens remain in the user's existing Git credential mechanism or GitHub CLI; they never enter the project files or browser bundle.
+
+The visual extension is layered: CSS is the universal fallback and Canvas is the default interactive enhancement. The current implementation pauses when the page is hidden, turns off for `prefers-reduced-motion`, limits DPR, and never becomes a navigation or reading dependency. WebGL fluid simulation remains optional and is not included in the current bundle. This extension does not change the static release's routes, data owners, or hosting provider.
+
+The implemented editor tree is:
+
+```text
+editor/
+  index.html
+  src/main.ts
+  src/style.css
+  src-tauri/
+    src/main.rs
+    Cargo.toml
+    tauri.conf.json
+    capabilities/default.json
+    icons/icon.svg
+    icons/icon.ico
+
+PDF publishing contract: the editor provides a dedicated upload_pdf command. It accepts a local source path plus optional public title, description, and source name. The command requires a .pdf extension, verifies the %PDF- signature, rejects files larger than 5 MiB, creates a bounded safe slug, refuses target collisions, copies to public/resources/<slug>.pdf, and creates content/resources/<slug>.md with title, description, source name, type, size, and /resources/<slug>.pdf href. If metadata creation fails, the newly copied PDF is removed.
+
+The generated file is intentionally public. The editor does not upload directly to a provider and does not create a server-side write path. The user must inspect the allowlisted diff, run npm run verify, confirm public disclosure, commit, and push. GitHub Actions then rebuilds Library and GitHub Pages serves the PDF. The quality gate checks both directions: every local metadata file points to an existing PDF, and every PDF under public/resources has a matching Library metadata href.
+```

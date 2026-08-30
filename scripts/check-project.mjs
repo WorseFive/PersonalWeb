@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
@@ -42,4 +42,28 @@ assert.equal(existsSync(contentDirectory), true);
 const trackedSource = read("lib/content.ts");
 assert.match(trackedSource, /["']content["'],\s*["']blog["']/);
 assert.doesNotMatch(read(".gitignore"), /^content\/blog/m, "Blog content must remain Git-tracked.");
+const resourcesDirectory = path.join(root, "content", "resources");
+assert.equal(existsSync(resourcesDirectory), true, "Public resource metadata directory is required.");
+const localResourceHrefs = new Set();
+for (const filename of readdirSync(resourcesDirectory).filter((entry) => entry.endsWith(".md"))) {
+  const source = read(path.join("content", "resources", filename));
+  const frontmatterMatch = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
+  assert.ok(frontmatterMatch, "Missing resource frontmatter: " + filename);
+  const fields = Object.fromEntries(frontmatterMatch[1].split(/\r?\n/).map((line) => {
+    const separator = line.indexOf(":");
+    return [line.slice(0, separator).trim(), line.slice(separator + 1).trim().replace(/^"(.*)"$/, "$1")];
+  }));
+  for (const field of ["title", "description", "sourceName", "type", "href"]) {
+    assert.ok(fields[field], "Resource " + filename + " is missing " + field + ".");
+  }
+  if (fields.href.startsWith("/resources/")) {
+    assert.match(fields.href, /^\/resources\/[^/]+\.pdf$/i, "Local resource must point to a PDF: " + filename);
+    assert.ok(existsSync(path.join(root, "public", fields.href.slice(1))), "Resource file is missing: " + fields.href);
+    localResourceHrefs.add(fields.href.toLowerCase());
+  }
+}
+const publicResourcesDirectory = path.join(root, "public", "resources");
+if (existsSync(publicResourcesDirectory)) for (const filename of readdirSync(publicResourcesDirectory)) {
+  if (filename.toLowerCase().endsWith(".pdf")) assert.ok(localResourceHrefs.has(("/resources/" + filename).toLowerCase()), "PDF is missing a Library metadata entry: " + filename);
+}
 console.log(`PASS: project structure, environment documentation, and ${contentFiles.length} blog content files are intact.`);
