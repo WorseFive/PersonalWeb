@@ -80,4 +80,4 @@ Defer administrator login, HMAC sessions, Supabase runtime access, Supabase keys
 
 The current repository must not be made public by the agent. Before Pages publication, the owner must either authorize public visibility or prepare a separate public Pages deployment repository. A paid GitHub plan, Render service, Vercel recovery, Supabase project, custom domain, DNS change, or external account creation is not required for the static release and must not be introduced to solve it.
 
-Status: accepted release direction; code migration, workflow, owner visibility decision, and Pages publication remain pending.
+Status: accepted and deployed as the zero-cost static release. The owner made the repository public, Pages was configured with `build_type=workflow`, and commit `ee95c23` was published successfully. Real About content and optional public resources remain owner-approved content inputs.

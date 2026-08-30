@@ -1,5 +1,23 @@
 # Progress log
 
+## 2026-08-30 - GitHub Pages published and online acceptance completed
+
+Status: zero-cost GitHub Pages release 1 is deployed and verified. Remaining work is limited to owner-approved About text and optional public resources.
+
+- Confirmed via the GitHub API that `WorseFive/PersonalWeb` is public.
+- Committed the static release as `ee95c233ccbef910782055a6cff5e4ed9e3bee81` and pushed it to `main`.
+- Configured GitHub Pages with `build_type=workflow`, HTTPS enforcement enabled, and the `github-pages` environment.
+- GitHub Actions run [33287103807](https://github.com/WorseFive/PersonalWeb/actions/runs/33287103807) completed successfully.
+- Published URL: [https://worsefive.github.io/PersonalWeb/](https://worsefive.github.io/PersonalWeb/).
+- Online HTTP checks returned 200 for home, About, blog index, all 3 articles, library, robots, sitemap, and OG SVG.
+- Online Chromium checks at 1440×900 and 390×844 passed for all public routes with no horizontal overflow, console errors, page errors, or failed resource responses.
+- Online keyboard checks reached the wordmark, navigation, and channel links with visible 3px focus outlines. Canonical and OG URLs point to the final Pages project-site URL.
+- No paid service, custom domain, DNS change, Supabase runtime, Render service, or Vercel recovery was introduced.
+
+Verification: `npm run verify` passed locally; static HTTP smoke test passed; online Pages route/asset check passed; online desktop/mobile browser, keyboard/focus, metadata, console, and overflow checks passed; GitHub Actions passed.
+
+Next concrete step: if desired, the owner supplies approved About profile text/links and approved public resources; add them through Git, rerun the static gate and Pages workflow, then repeat online acceptance. The current release is complete without those optional content inputs by design.
+
 ## 2026-08-29 - Finalized project-site links and static release gates
 
 Status: all locally executable zero-cost release tasks are complete; GitHub owner authorization and the actual Pages workflow run remain the only external blockers.

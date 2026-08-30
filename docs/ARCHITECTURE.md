@@ -36,7 +36,7 @@ There is intentionally no production request path from the browser to Next.js, S
 
 ## Repository visibility and URL
 
-The current repository is `WorseFive/PersonalWeb` and has historically been private. GitHub Free Pages is intended for public repositories; changing visibility is an owner action and must not be performed by the agent.
+The current repository is `WorseFive/PersonalWeb` and is now public by owner action. GitHub Free Pages is therefore eligible for the selected workflow-based publication path.
 
 The preferred owner-approved route is a project site:
 
@@ -158,4 +158,4 @@ The Supabase contract test, `npm run test:live`, server functional tests, upload
 
 ## Architectural status
 
-The repository currently contains a working dynamic Next.js implementation plus the newly documented static target. Static migration is not complete until the code, workflow, checks, and actual Pages output match this document. Render/Vercel/Supabase configuration is not evidence of a completed release and must not be represented as the GitHub Pages runtime.
+The repository contains the static release implementation and a recoverable `legacy/server-only/` copy of the former dynamic implementation. Commit `ee95c23` was published through GitHub Actions run `33287103807`; the Pages URL is `https://worsefive.github.io/PersonalWeb/`. Render/Vercel/Supabase configuration is not part of the GitHub Pages runtime. Real owner-approved About details and additional public resources remain content inputs, not hosting blockers.

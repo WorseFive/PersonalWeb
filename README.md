@@ -66,6 +66,6 @@ The preferred project-site URL is:
 https://worsefive.github.io/PersonalWeb/
 ```
 
-This requires the owner to authorize the repository visibility and select GitHub Actions under Settings → Pages. The agent must not change repository visibility, create accounts, add a paid plan, change DNS, or publish externally without that authorization.
+The repository is now public and Pages is configured to deploy from GitHub Actions. The current published site is available at this URL. The agent must not add a paid plan, change DNS, or publish unrelated external resources without authorization.
 
 Render, Vercel, Supabase, Railway, and Docker/VPS remain documented only as future dynamic-hosting options if the owner later restores login, comments, uploads, private files, or database-backed content.

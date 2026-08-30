@@ -850,39 +850,31 @@ https://<owner>.github.io/
 
 | 阶段 | 完成标准 | 当前状态 | 下一步 |
 | --- | --- | --- | --- |
-| A 基线/公开边界 | 工作树、安全和仓库可见性决定完成 | 本地完成；公开范围待所有者决定 | 确认 Pages 仓库路线 |
+| A 基线/公开边界 | 工作树、安全和仓库可见性决定完成 | 完成；仓库已由所有者公开 | 保持公开内容审查 |
 | B Next 静态化 | `output: export`、动态功能清理、静态构建通过 | 本地完成 | 固化公开内容并复核静态输出 |
 | C 内容资源 | 博客/About/资源静态源完成 | 博客完成；About待批准；资源默认为空 | 补充批准资料/资源 |
-| D Pages workflow | 官方 Actions 构建并发布 `out` | workflow 已添加；线上运行待授权 | 配置 Pages 并触发 workflow |
-| E 本地验收 | 静态产物、链接、桌面/390px、键盘通过 | 构建与产物检查完成；浏览器 QA 待执行 | 启动静态服务器做浏览器验收 |
-| F 线上验收 | GitHub Pages URL 全部页面和 metadata 通过 | 待 Pages 发布 | 发布后验收 |
-| G 安全收口 | 无密钥、无私密内容、公开边界正确 | 本地静态边界检查完成；公开前审查待执行 | 审查公开仓库内容和历史 |
-| H 回滚/文档 | 回滚方式和文档记录完成 | 文档已同步；Pages commit/URL 待记录 | 发布后写入 commit/URL |
+| D Pages workflow | 官方 Actions 构建并发布 `out` | 完成；Actions run `33287103807` 成功 | 继续保持 workflow 受保护 |
+| E 本地验收 | 静态产物、链接、桌面/390px、键盘通过 | 完成 | 内容更新后回归验证 |
+| F 线上验收 | GitHub Pages URL 全部页面和 metadata 通过 | 完成；`https://worsefive.github.io/PersonalWeb/` | 内容更新后回归验证 |
+| G 安全收口 | 无密钥、无私密内容、公开边界正确 | 完成本地和线上静态边界检查；About/资源需持续审查 | 新增公开内容前检查 |
+| H 回滚/文档 | 回滚方式和文档记录完成 | 完成；已记录 commit、workflow、URL | 以后发布保留上一通过提交 |
 
 ## 16. 当前下一步执行清单
 
 按以下顺序执行：
 
-1. 所有者确认当前 `WorseFive/PersonalWeb` 是否允许公开；
-2. 如果允许公开，确定使用 project site：`https://worsefive.github.io/PersonalWeb/`；
-3. 如果不允许公开，确认是否准备单独公开 Pages 部署仓库；
-4. 决定第一版是否完全删除评论，默认删除；
-5. 决定资源库是静态下载还是仅公开链接，默认仅发布批准的小文件/链接；
-6. 为当前 Next.js 版本确认静态导出配置和 project-site base path；
-7. 移除动态 API、管理员、上传和 Supabase 运行时引用；
-8. 将 blog、About 和 library 改为只读静态数据；
-9. 将 OG 图片改为静态构建产物；
-10. 添加 GitHub Actions Pages workflow；
-11. 添加静态产物检查和链接检查；
-12. 本地运行 `npm ci`、`npm run typecheck`、`npm run build` 和静态测试；
-13. 所有者在 GitHub Settings → Pages 选择 GitHub Actions；
-14. 发布到 GitHub Pages 临时/默认 URL；
-15. 完成公开页面、404、SEO、桌面、390px、键盘、焦点、控制台和溢出验收；
-16. 接收并写入 About 批准资料；
-17. 重新构建并验收正式内容；
-18. 检查公开仓库、Actions 日志和 `out` 产物没有秘密；
-19. 更新全部连续性文档；
-20. 只有所有完成标准满足后，才宣布零费用 GitHub Pages 版本完成。
+1. 已完成：所有者将 `WorseFive/PersonalWeb` 改为公开仓库；
+2. 已完成：确定 project site `https://worsefive.github.io/PersonalWeb/`；
+3. 已完成：第一版删除动态评论、管理员、上传、私有下载和 Supabase 运行时依赖；
+4. 已完成：配置 Next.js 静态导出、project-site base path、静态 OG、robots、sitemap 和 404；
+5. 已完成：添加 GitHub Actions Pages workflow 和静态产物检查；
+6. 已完成：本地构建、HTTP、桌面、390px、键盘、焦点、控制台和溢出验收；
+7. 已完成：配置 Pages Actions 发布源并成功发布 commit `ee95c23`；
+8. 已完成：线上验收全部公开路由和 metadata；
+9. 待内容输入：所有者提供批准的 About 展示名、简介和外部链接；
+10. 待内容输入：所有者决定是否加入公开资源文件/链接，并逐项批准；
+11. 每次新增公开内容后重新运行 `npm run verify`，检查公开边界并观察 Actions；
+12. 只有新增内容也通过公开隐私审查后，才认为内容版本完成。
 
 ## 16.1 已执行的静态迁移工作
 
